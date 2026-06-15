@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund --ignore-scripts
+      - name: Build
+        run: npm run build
+      - name: Verify dist exists
+        run: |
+          test -f dist/index.html
+          test -f dist/scripts/auth.js
+          test -f dist/scripts/vault.js
+          test -f dist/scripts/resolver.js
+          ls -la dist/

@@ -1,0 +1,20 @@
+{
+  "name": "envpact-dashboard",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "Web dashboard for envpact — visual secret management via GitHub OAuth",
+  "homepage": "https://envpact.oriz.in",
+  "repository": { "type": "git", "url": "git+https://github.com/chirag127/envpact-dashboard.git" },
+  "license": "MIT",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "test": "node --test tests/*.test.js"
+  },
+  "dependencies": {
+    "astro": "^5.0.0"
+  }
+}

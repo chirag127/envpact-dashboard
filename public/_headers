@@ -1,0 +1,8 @@
+/* Cloudflare Pages headers configuration */
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: interest-cohort=(), browsing-topics=()
+  Content-Security-Policy: default-src 'self'; connect-src 'self' https://api.github.com https://github.com; img-src 'self' data: https://avatars.githubusercontent.com; style-src 'self' 'unsafe-inline'; script-src 'self'; frame-ancestors 'none'; base-uri 'self'
