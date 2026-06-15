@@ -298,9 +298,13 @@ const description = 'Manage your envpact private vault visually via GitHub OAuth
                     const envs = Array.from(new Set(
                       Object.values(proj).flatMap(v => v && typeof v === 'object' ? Object.keys(v) : ['default'])
                     )).sort();
+                    const encCount = resolveProject(vault, name, null).encrypted.length;
+                    const encBadge = encCount > 0
+                      ? ` <span class="badge encrypted">decryption unsupported (${encCount})</span>`
+                      : '';
                     return `
                       <tr>
-                        <td><strong>${escapeHtml(name)}</strong></td>
+                        <td><strong>${escapeHtml(name)}</strong>${encBadge}</td>
                         <td>${keyCount}</td>
                         <td>${envs.map(e => `<span class="badge">${escapeHtml(e)}</span>`).join(' ')}</td>
                         <td>
@@ -352,8 +356,17 @@ const description = 'Manage your envpact private vault visually via GitHub OAuth
             const project = btn.dataset.project;
             const env = prompt('Environment (development/staging/production/default):', 'default') || 'default';
             const result = resolveProject(vault, project, env === 'default' ? null : env);
+            if (result.encrypted.length > 0) {
+              alert(`This project has ${result.encrypted.length} encrypted secrets. The browser dashboard cannot decrypt enc: values — use envpact-cli locally to materialize them. The downloaded .env will skip those keys.`);
+            }
             const ordered = Object.keys(result.resolved);
-            const content = renderEnv(ordered, result.resolved, { project, environment: result.environment });
+            let content = renderEnv(ordered, result.resolved, { project, environment: result.environment });
+            if (result.encrypted.length > 0) {
+              const encComments = result.encrypted
+                .map(key => `# ${key}: decryption unsupported — use envpact-cli`)
+                .join('\n') + '\n';
+              content = content + encComments;
+            }
             downloadEnv(`.env.${project}.${result.environment}`, content);
           });
         }

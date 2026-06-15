@@ -1,6 +1,12 @@
 /**
  * Client-side resolver — port of envpact-cli/lib/resolver.js.
- * Bit-for-bit identical semantics. See SHARED_SPEC.md §1.
+ *
+ * Semantics match the CLI port (see SHARED_SPEC.md §1) with ONE intentional
+ * divergence: the browser cannot run GPG, so encrypted (`enc:`) entries are
+ * NEVER written into `resolved`. They are still tracked in the returned
+ * `encrypted[]` array so the UI can surface them, but `.env` rendering and
+ * any downstream consumer will simply omit those keys. To materialize
+ * `enc:` values, use envpact-cli locally.
  */
 
 export const SHARED_PREFIX = 'shared.';
@@ -38,7 +44,7 @@ export function resolveProject(vault, projectName, environment) {
     } else { invalid.push(key); continue; }
     const r = resolveString(candidate, shared);
     if (r.status === 'ok') resolved[key] = r.value;
-    else if (r.status === 'encrypted') { resolved[key] = r.value; encrypted.push(key); }
+    else if (r.status === 'encrypted') { encrypted.push(key); }
     else if (r.status === 'unresolved') unresolved.push(key);
     else invalid.push(key);
   }

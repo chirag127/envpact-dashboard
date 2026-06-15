@@ -16,7 +16,11 @@ export async function getVaultRepo(token, owner, repo = 'envpact-secrets') {
     if (r.status === 404) return null;
     throw new Error(`repo fetch failed: ${r.status}`);
   }
-  return await r.json();
+  const data = await r.json();
+  if (data.private !== true) {
+    throw new Error(`Vault repo ${owner}/${repo} is PUBLIC. Refusing to load secrets — make the repo private on GitHub before continuing.`);
+  }
+  return data;
 }
 
 export async function getSecretsFile(token, owner, repo = 'envpact-secrets') {
