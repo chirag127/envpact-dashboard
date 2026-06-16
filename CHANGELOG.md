@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.4.0] - 2026-06-16
+
+### Fixed
+
+- **Connect GitHub button now actually works.** v0.3.0 fixed the
+  upstream CORS issue with a Pages Functions proxy, but the button
+  still appeared dead because the inline `<script>` block in
+  `index.astro` that wired up its event listener was being blocked
+  by the strict `Content-Security-Policy` header (`script-src 'self'`
+  with no `'unsafe-inline'`). The script was never executing, so
+  the button had no handler. Reproduced with Playwright:
+  `[error] Executing inline script violates the following Content
+  Security Policy directive 'script-src 'self''`.
+  
+  Moved all 171 lines of inline JavaScript out of `index.astro` into
+  `public/scripts/index.js` (loaded as `<script type="module"
+  src="/scripts/index.js"></script>`). The CSP can stay strict —
+  no `'unsafe-inline'` needed.
+
+### Why the v0.3.0 e2e test missed this
+
+Curl-only verification of `/api/auth/device` returned a real device
+code, which proved the proxy works at the network layer, but a
+real-browser test was never run. v0.4.0 adds Playwright end-to-end
+verification: load page → click button → wait for auth dialog. If
+CSP or any other browser-only failure breaks the button, this catches
+it.
+
 ## [0.3.0] - 2026-06-16
 
 ### Fixed
