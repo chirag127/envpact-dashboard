@@ -32,13 +32,24 @@ envpact-mcp / envpact-vscode have access to.
 
 - `src/pages/index.astro` — single-page shell + `<style is:global>`.
 - `public/scripts/index.js` — UI orchestration (projects table,
-  shared table, per-key status panels, .env download).
+  shared table, per-key status panels, .env download, global
+  .env download button).
 - `public/scripts/auth.js` — GitHub OAuth Device Flow.
 - `public/scripts/vault.js` — Contents API client (read with
   upgradeVault auto-upgrade, commit with v3-shape writes).
 - `public/scripts/resolver.js` — v3 resolver, upgradeVault,
   maskValue, formatRelative, latestModifiedAt.
-- `tests/resolver.test.js` + `tests/vault.test.js` — Node `--test`.
+- `public/scripts/timestamps.js` — `formatTimestamp(iso) →
+  {utc, ist}`. IST is host-TZ independent (forced
+  `Asia/Kolkata`). Per SHARED_SPEC §1.5.
+- `public/scripts/global-env.js` — `renderGlobalEnv(vault)` +
+  `downloadGlobalEnv(vault)`. Walks `vault.shared.*`
+  alphabetically, emits §5-quoted `KEY=value` lines, encrypted
+  entries become decrypt-via-cli comments. Per SHARED_SPEC
+  §1.6 + §5.1.
+- `tests/resolver.test.js`, `tests/vault.test.js`,
+  `tests/timestamps.test.js`, `tests/global-env.test.js` —
+  Node `--test`.
 - `astro.config.mjs` — static output config.
 - `wrangler.toml` — Cloudflare Pages config.
 - `functions/api/auth/{device,token}.ts` — OAuth proxy. Schema

@@ -31,10 +31,23 @@ server, no third-party storage, no telemetry.
 - **Sign in with GitHub** (device flow — works without a backend).
 - **View your vault**: projects, key counts, per-key last-modified
   timestamps.
+- **Last-modified columns render dual UTC + IST timestamps.** The
+  visible text is `YYYY-MM-DD HH:MM:SS IST` (always Asia/Kolkata
+  regardless of your browser timezone, per
+  [SHARED_SPEC §1.5](https://github.com/chirag127/envpact/blob/main/SHARED_SPEC.md#15-timestamp-rendering-utc--ist));
+  hover any cell to see the canonical UTC string in the tooltip.
 - **List shared secrets**: names + encryption status + last
   modified (values never appear).
 - **Download `.env`** for any project (single-environment per
   project; no env picker).
+- **Download global `.env`** — a top-of-page button generates
+  `envpact-global.env` from `vault.shared.*` (alphabetical, `KEY=value`,
+  encrypted entries become `# KEY: encrypted — decrypt-via-cli`
+  comments per [§1.6 + §5.1](https://github.com/chirag127/envpact/blob/main/SHARED_SPEC.md#16-global-vault-env)).
+  Save the file to `~/.envpact/.env` to expose every shared secret to
+  your shell, or let `envpact-cli --sync-global` regenerate it
+  locally. The dashboard never emits `enc:*` ciphertext into the
+  download.
 - **Per-key status panel** per project, with last-modified
   timestamps for every key.
 - **Direct link to GitHub commit history** for full audit log.
