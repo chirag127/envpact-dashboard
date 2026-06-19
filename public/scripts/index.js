@@ -65,6 +65,9 @@ async function renderDashboard() {
     renderLoggedOut();
     return;
   }
+  // Hide the marketing block once the user is signed in — it's
+  // an intro for first-time visitors, not a permanent fixture.
+  document.getElementById('marketing')?.setAttribute('hidden', '');
 
   app.innerHTML = '<p>Loading vault…</p>';
   try {
