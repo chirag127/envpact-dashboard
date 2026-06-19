@@ -29,11 +29,42 @@ server, no third-party storage, no telemetry.
 ## Features
 
 - **Sign in with GitHub** (device flow — works without a backend).
-- **View your vault**: projects, key counts, environment list.
-- **List shared secrets**: names + encryption status (values
-  never appear).
-- **Download `.env`** for any project + environment.
+- **View your vault**: projects, key counts, per-key last-modified
+  timestamps.
+- **List shared secrets**: names + encryption status + last
+  modified (values never appear).
+- **Download `.env`** for any project (single-environment per
+  project; no env picker).
+- **Per-key status panel** per project, with last-modified
+  timestamps for every key.
 - **Direct link to GitHub commit history** for full audit log.
+
+## What the dashboard CANNOT do
+
+The dashboard is a static site. It has no access to your local
+machine, so it cannot do the per-key pull/push work that the other
+envpact surfaces handle:
+
+- Per-key **pull** (vault → local `.env`) with conflict detection
+  against `.env.example.lock`.
+- Per-key **push** (local `.env` → vault) with conflict detection.
+- The full per-key status enumeration in `SHARED_SPEC.md` §1.3 —
+  `local_newer` / `vault_newer` / `both_diverged` / `local_only`
+  classifications all need a local `.env` plus the lock sidecar.
+
+For those, use:
+
+- **[envpact-cli](https://github.com/chirag127/envpact-cli)** —
+  the canonical CLI, runs locally with full git + filesystem
+  access.
+- **[envpact-mcp](https://github.com/chirag127/envpact-mcp)** —
+  MCP server for Claude / IDE integrations.
+- **[envpact-vscode](https://github.com/chirag127/envpact-vscode)**
+  — VS Code extension with a tree view + per-key sync panel.
+
+The dashboard surfaces vault state (values, references, last
+modified) and lets you read/edit secrets directly through the
+GitHub Contents API. That's it.
 
 ## Setup (for users)
 

@@ -1,5 +1,52 @@
 # Changelog
 
+## [0.5.0] - 2026-06-19
+
+### BREAKING
+
+- **Vault schema v3.** The dashboard now expects flat,
+  single-environment, per-key timestamped entries — every leaf in
+  `shared.*` and `projects.<name>.*` is `{value: <string>,
+  _modified_at: <ISO>}`. v1/v2 vaults are auto-upgraded on read in
+  memory (no rewrite) and silently persisted as v3 on the next edit
+  the user makes through the dashboard, mirroring the behaviour
+  shipped in envpact-cli, envpact-mcp, and envpact-vscode for v3.
+  See `SHARED_SPEC.md` §1.4 for the migration rules.
+
+- **Environment dropdown removed from the .env download flow.** The
+  `prompt('Environment …')` step is gone; the Download button now
+  just produces `.env.<project>` for the chosen project. There is
+  one environment per project in v3.
+
+### Added
+
+- **Last modified column** on the Projects table (most recent
+  `_modified_at` across the project's keys, formatted via
+  `Intl.RelativeTimeFormat`) and on the Shared Secrets table (the
+  entry's own `_modified_at`).
+- **Per-key status panel** on each project row — expandable, shows
+  every key with its status (synced / shared ref / encrypted /
+  invalid) and last-modified timestamp. A banner inside the panel
+  notes that the dashboard shows vault state only and points
+  per-key pull/push at envpact-cli, envpact-mcp, and envpact-vscode
+  (the dashboard has no local `.env` to compare against, so the
+  full status enumeration in `SHARED_SPEC.md` §1.3 is out of reach
+  here).
+- **Tests.** First test files in this repo: `tests/resolver.test.js`
+  and `tests/vault.test.js` (29 cases covering v3 happy paths,
+  v1/v2 → v3 upgrade equivalence, encrypted passthrough, and the
+  Contents API round-trip canary that asserts `_default_env` does
+  NOT survive a write).
+
+### Removed
+
+- The "Environments" badges column on the Projects table.
+- `findReferencingProjects`'s env-aware scan path; v3 entries are
+  flat.
+- The `environment` parameter from `resolveProject`; encrypted
+  values continue to be omitted from `resolved` (audit #6 from
+  v0.2.0 still applies — browsers have no GPG).
+
 ## [0.4.0] - 2026-06-16
 
 ### Fixed
