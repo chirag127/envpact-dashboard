@@ -18,7 +18,7 @@
     "test": "node --test tests/*.test.js"
   },
   "dependencies": {
-    "astro": "^5.0.0"
+    "astro": "^6.4.6"
   },
   "packageManager": "pnpm@10.18.0"
 }
